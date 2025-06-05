@@ -1,10 +1,11 @@
 // Set up the map
-var mymap = L.map('map').setView([51.4285, -1.8538], 16);
+var mymap = L.map('map').setView([51.4286, -1.8538], 17);
 
 // Add basemaps
-var streets = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
-    id: 'Esri.WorldTopoMap'
+var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 20
 }).addTo(mymap);
 
 var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -34,3 +35,17 @@ L.control.scale({
     metric: true,    // Show metric units (meters/kilometers)
     position: 'bottomleft'
 }).addTo(mymap);
+
+
+// Add GeoJSONs to the map
+fetch('GeoJSONs/c01_AubreyPlanA.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: {
+        weight: 0,
+        fillColor: "black",
+        fillOpacity: 0.7
+      }
+    }).addTo(mymap);
+  });
