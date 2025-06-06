@@ -27,21 +27,34 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
     <!-- Leaflet LinearMeasurement JS -->
     <script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
-    <!-- Leaflet MultiControl CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/clavijojuan/L.multiControl@3.0.0/dist/L.multiControl.min.css">
-    <!-- Leaflet MultiControl JS -->
-    <script src="https://cdn.jsdelivr.net/gh/clavijojuan/L.multiControl@latest/dist/L.multiControl.min.js"></script>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Link style sheet -->
     <link rel="stylesheet" href = "avebury.css">   
 </head>
     
 <body>
+
+    <div id="splash-modal" class="active">
+    <div class="splash-content">
+        <h1>Welcome to Avebury Revisualised</h1>
+        <div class="splash-text">
+        <p>This interactive map explores evolving interpretations of Avebury Henge (Wiltshire, England) through historic plans by antiquarians and archaeologists from the 17th–20th centuries. Use this map to:</p>
+        <ul>
+            <li>Compare plans by John Aubrey (1626-97), William Stukeley (1687-1765), and Alexander Keiller (1889-1955)</li>
+            <li>Customise views with adjustable colours and opacity for each layer</li>
+        </ul>
+        </div>
+        <button id="accept-splash">Explore the Map</button>
+    </div>
+    </div>
+    
+    
     <div id="map"></div>
     <div class="map-title">
         <h1>Avebury Revisualised: <br> Digitised Cartographies <br> of a Contested Past</h1>
     </div>
     <script src="avebury.js"></script>
+    
 </body>
     
 </html>

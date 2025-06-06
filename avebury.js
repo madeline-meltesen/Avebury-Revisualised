@@ -154,6 +154,18 @@ function loadGeoJSON(url, name, defaultColor) {
 Promise.all([
     loadGeoJSON('GeoJSONs/c01_AubreyPlanA.geojson', "01: Aubrey Plan A", "#000000"),
     loadGeoJSON('GeoJSONs/c02_StukeleyPlanE.geojson', "02: Stukeley Plan E", "#ff0000"),
+    loadGeoJSON('GeoJSONs/______', "03: Keiller SE Quad", "#0000FF"),
+    loadGeoJSON('GeoJSONs/______', "04: Aubrey S Circle", "#000000"),
 ]).then(() => {
     console.log('All GeoJSON layers loaded');
+});
+
+
+// Splash screen interaction
+document.addEventListener('DOMContentLoaded', function() {
+    // Your existing code here
+    document.getElementById('accept-splash').addEventListener('click', function() {
+        document.getElementById('splash-modal').classList.add('hidden');
+        document.getElementById('map').classList.remove('inactive');
+    });
 });

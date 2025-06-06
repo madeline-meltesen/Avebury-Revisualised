@@ -5,6 +5,69 @@ html, body {
     overflow: hidden;
 }
 
+
+/* Splash screen */
+#splash-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.5s ease;
+  opacity: 1;
+  pointer-events: all;
+}
+#splash-modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash-content {
+    animation: fadeInUp 2s ease-out;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    text-align: center;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.splash-content h1 {
+  color: #3b82f6;
+  margin-bottom: 1rem;
+  font-family: 'Lexend Exa', sans-serif;
+}
+.splash-text {
+    text-align: left;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+    font-family: 'Lexend', sans-serif;
+    font-size: 15px;
+}
+#accept-splash {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: 'Lexend', sans-serif;
+}
+#accept-splash:hover {
+  background-color: #2563eb;
+}
+
+
 #map {
     background-color: lightgray;
     height: 100vh;
@@ -91,13 +154,11 @@ html, body {
     max-height: 70vh;
     overflow-y: auto;
 }
-
 .geojson-control h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #333;
 }
-
 .layer-item {
     margin: 8px 0;
     display: flex;
@@ -105,16 +166,13 @@ html, body {
     align-items: center;
     gap: 8px;
 }
-
 .layer-checkbox {
     margin-right: 5px;
 }
-
 .layer-label {
     flex-grow: 1;
     min-width: 120px;
 }
-
 .layer-color {
     height: 20px;
     width: 25px;
@@ -122,28 +180,22 @@ html, body {
     border: 1px solid #ccc;
     cursor: pointer;
 }
-
 .opacity-container {
     display: flex;
     align-items: center;
     gap: 5px;
     min-width: 150px;
 }
-
 .opacity-slider {
     flex-grow: 1;
 }
-
 .layer-divider {
     margin: 5px 0;
     border: 0;
     border-top: 1px solid #eee;
 }
-
-
 .leaflet-control-multi {
     z-index: 1000 !important;
 }
-
 
 
