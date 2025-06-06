@@ -10,7 +10,8 @@ var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/
 
 var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-    id: 'Esri.WorldImagery'
+    id: 'Esri.WorldImagery',
+    maxZoom: 19
 });
 
 // Create variable for basemaps
@@ -52,6 +53,16 @@ L.control.scale({
     position: 'bottomleft'
 }).addTo(mymap);
 
+
+// Create measurement tool
+var measureControl = L.control.measure({
+    position: 'topright',
+    primaryLengthUnit: 'meters',
+    secondaryLengthUnit: 'kilometers',
+    primaryAreaUnit: 'sqmeters', 
+    activeColor: '#3b82f6',    // color for active measurement
+    completedColor: '#10b981'  // color for completed measurement
+}).addTo(mymap);
 
 
 // GeoJSON layer control
