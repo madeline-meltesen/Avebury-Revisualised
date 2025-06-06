@@ -46,8 +46,8 @@ html, body {
     border: none;
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    width: 31px; 
-    height: 31px; 
+    width: 30px; 
+    height: 30px; 
     top: 67.5px; 
     left: 1px;
     cursor: pointer; 
@@ -70,8 +70,7 @@ html, body {
     opacity: 85%;
 }
 
-
-/* Overlay control */
+/* Basemap control */
 .leaflet-control-layers, 
 .leaflet-control-layers-overlays {
     font-family: 'Lexend', sans-serif;
@@ -80,8 +79,71 @@ html, body {
     border-radius: 5px;
 }
 
-.leaflet-top.leaflet-left .geojson-overlay-control {
-    top: 62px;
-    left: 0px;
+/* GeoJSON Control Panel */
+.geojson-control {
+    top: 64px;
     background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-family: 'Lexend', sans-serif;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    border: 1px solid #ccc;
+    max-height: 70vh;
+    overflow-y: auto;
 }
+
+.geojson-control h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.layer-item {
+    margin: 8px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.layer-checkbox {
+    margin-right: 5px;
+}
+
+.layer-label {
+    flex-grow: 1;
+    min-width: 120px;
+}
+
+.layer-color {
+    height: 20px;
+    width: 25px;
+    padding: 0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.opacity-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.opacity-slider {
+    flex-grow: 1;
+}
+
+.layer-divider {
+    margin: 5px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+
+.leaflet-control-multi {
+    z-index: 1000 !important;
+}
+
+
+

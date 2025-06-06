@@ -1,5 +1,5 @@
 // Set up the map
-var mymap = L.map('map').setView([51.4286, -1.8538], 17);
+var mymap = L.map('map').setView([51.4286, -1.8540], 17);
 
 // Add basemaps
 var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -21,7 +21,10 @@ var baseLayers = {
 };
 
 // Create menu window for basemap control
-var layerControl = L.control.layers(baseLayers, {}, { collapsed: false }).addTo(mymap);
+var layerControl = L.control.layers(baseLayers, {}, { 
+    collapsed: false,
+    position: 'topright'
+}).addTo(mymap);
 
 // Create reset view button
 var ZoomOutControl = L.Control.extend({
@@ -32,7 +35,7 @@ var ZoomOutControl = L.Control.extend({
         var button = L.DomUtil.create('button', 'custom-button');
             button.title = 'Reset view';
             button.onclick = function() {
-                map.setView([51.4286, -1.8538], 17); 
+                map.setView([51.4286, -1.8540], 17); 
                 };
                 return button;
     }
@@ -53,7 +56,6 @@ L.control.scale({
     position: 'bottomleft'
 }).addTo(mymap);
 
-
 // Create measurement tool
 var measureControl = L.control.measure({
     position: 'topright',
@@ -65,33 +67,93 @@ var measureControl = L.control.measure({
 }).addTo(mymap);
 
 
+
 // GeoJSON layer control
+
+// Create unified GeoJSON control container
+var geoJSONControl = L.Control.extend({
+    options: {
+        position: 'topleft'
+    },
+    onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'geojson-control');
+        container.innerHTML = '<h3>Digitised Transparencies</h3>';
+        return container;
+    }
+});
+var geoJSONControlInstance = new geoJSONControl().addTo(mymap);
+
+// GeoJSON layer storage
 var overlayLayers = {};
 
-// Add GeoJSONs to the map
-function loadGeoJSON(url, name, color) {
+// Function to load GeoJSON and create controls
+function loadGeoJSON(url, name, defaultColor) {
     return fetch(url)
         .then(response => response.json())
         .then(data => {
+        // Create GeoJSON layer
             overlayLayers[name] = L.geoJSON(data, {
                 style: {
                     weight: 0,
-                    fillColor: color,
-                    fillOpacity: 0.5
+                    fillColor: defaultColor,
+                    fillOpacity: 0.6
                 }
             }).addTo(mymap);
-        });
-}
 
-// Initialise layer control
+        // Create control elements
+            var layerContainer = L.DomUtil.create('div', 'layer-item', geoJSONControlInstance.getContainer());
+            
+        // Visibility checkbox
+            var checkbox = L.DomUtil.create('input', 'layer-checkbox', layerContainer);
+            checkbox.type = 'checkbox';
+            checkbox.checked = true;
+            checkbox.onchange = function() {
+                mymap.hasLayer(overlayLayers[name]) ? 
+                    mymap.removeLayer(overlayLayers[name]) : 
+                    mymap.addLayer(overlayLayers[name]);
+            };
+        
+        // Layer name
+            var label = L.DomUtil.create('label', 'layer-label', layerContainer);
+            label.textContent = name;
+            label.htmlFor = 'layer-' + name.replace(/\s+/g, '-');
+            
+        // Color picker
+            var colorPicker = L.DomUtil.create('input', 'layer-color', layerContainer);
+            colorPicker.type = 'color';
+            colorPicker.value = defaultColor;
+            colorPicker.title = 'Change color';
+            colorPicker.oninput = function() {
+                overlayLayers[name].setStyle({ fillColor: this.value });
+            };
+        
+            // Opacity slider
+            var opacityContainer = L.DomUtil.create('div', 'opacity-container', layerContainer);
+            var opacityLabel = L.DomUtil.create('span', 'opacity-label', opacityContainer);
+            opacityLabel.textContent = 'Opacity:';
+            var opacitySlider = L.DomUtil.create('input', 'opacity-slider', opacityContainer);
+            opacitySlider.type = 'range';
+            opacitySlider.min = 0;
+            opacitySlider.max = 1;
+            opacitySlider.step = 0.1;
+            opacitySlider.value = 0.6;
+            L.DomEvent.on(opacitySlider, 'mousedown touchstart click', L.DomEvent.stopPropagation);
+            opacitySlider.oninput = function() {
+                overlayLayers[name].setStyle({ fillOpacity: parseFloat(this.value) });
+            };
+        
+        // Divider
+            L.DomUtil.create('hr', 'layer-divider', geoJSONControlInstance.getContainer());
+            
+            return overlayLayers[name];
+        })
+        .catch(error => console.error('Error loading GeoJSON:', error));
+}        
+
+// Load all GeoJSON layers
 Promise.all([
-    loadGeoJSON('GeoJSONs/c01_AubreyPlanA.geojson', "01: Aubrey Plan A", "black"),
-    loadGeoJSON('GeoJSONs/c02_StukeleyPlanE.geojson', "02: Stukeley Plan E", "red"),
+    loadGeoJSON('GeoJSONs/c01_AubreyPlanA.geojson', "01: Aubrey Plan A", "#000000"),
+    loadGeoJSON('GeoJSONs/c02_StukeleyPlanE.geojson', "02: Stukeley Plan E", "#ff0000"),
 ]).then(() => {
-    var overlayControl = L.control.layers(null, overlayLayers, {
-        collapsed: false,
-        position: 'topleft'
-    }).addTo(mymap);
-    
-    overlayControl.getContainer().classList.add('geojson-overlay-control');
-})
+    console.log('All GeoJSON layers loaded');
+});
