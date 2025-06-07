@@ -8,61 +8,62 @@ html, body {
 
 /* Splash screen */
 #splash-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  opacity: 1;
-  pointer-events: all;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    pointer-events: all;
 }
 #splash-modal.hidden {
-  opacity: 0;
-  pointer-events: none;
+    opacity: 0;
+    pointer-events: none;
 }
 .splash-content {
     animation: fadeInUp 2s ease-out;
     background-color: #fff;
     padding: 2rem;
     border-radius: 8px;
-    max-width: 530px;
+    max-width: 550px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     text-align: center;
 }
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 .splash-content h1 {
-  color: #3b82f6;
-  margin-bottom: 1rem;
-  font-family: 'Lexend Exa', sans-serif;
+    color: #3b82f6;
+    margin-bottom: 1rem;
+    font-family: 'Lexend Exa', sans-serif;
 }
 .splash-text {
     text-align: left;
-    margin: 1.5rem 0;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
     line-height: 1.6;
     font-family: 'Lexend', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
 }
 #accept-splash {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: 'Lexend', sans-serif;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: 'Lexend', sans-serif;
 }
 #accept-splash:hover {
-  background-color: #2563eb;
+    background-color: #2563eb;
 }
 
 
