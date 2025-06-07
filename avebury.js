@@ -75,7 +75,7 @@ var geoJSONControl = L.Control.extend({
     },
     onAdd: function(map) {
         var container = L.DomUtil.create('div', 'geojson-control');
-        container.innerHTML = '<h3>Digitised Transparencies</h3>';
+        container.innerHTML = '<h3>Digitised Plans</h3>';
         return container;
     }
 });
