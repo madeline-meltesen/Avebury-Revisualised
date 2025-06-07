@@ -1,5 +1,5 @@
 // Set up the map
-var mymap = L.map('map').setView([51.4286, -1.8540], 17);
+var mymap = L.map('map').setView([51.4286, -1.8542], 17);
 
 // Add basemaps
 var streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -35,7 +35,7 @@ var ZoomOutControl = L.Control.extend({
         var button = L.DomUtil.create('button', 'custom-button');
             button.title = 'Reset view';
             button.onclick = function() {
-                map.setView([51.4286, -1.8540], 17); 
+                map.setView([51.4286, -1.8542], 17); 
                 };
                 return button;
     }
@@ -69,8 +69,6 @@ var measureControl = L.control.measure({
 
 
 // GeoJSON layer control
-
-// Create unified GeoJSON control container
 var geoJSONControl = L.Control.extend({
     options: {
         position: 'topleft'
@@ -85,6 +83,60 @@ var geoJSONControlInstance = new geoJSONControl().addTo(mymap);
 
 // GeoJSON layer storage
 var overlayLayers = {};
+
+// Link GeoJSONs to original digitised transparency PNGs
+const layerImages = {
+    "01: Aubrey Plan A": "Transparencies/01_AubreyPlanA.png",
+    "02: Stukeley Plan E": "Transparencies/02_StukeleyPlanE.png",
+    "03: Keiller SE Quad": "Transparencies/03_KeillerSEQuad.png",
+    "04: Aubrey Plan A (S Circle)": "Transparencies/04_AubreySCircle.png",
+    "05: Aubrey Plan A (S Circle Enlarged)": "Transparencies/05_AubreySCircleEnlarged.png",
+    "06: Stukeley Plate 32": "Transparencies/06_StukeleyPlate32.png",
+    "07: Stukeley Plate 33": "Transparencies/07_StukeleyPlate33.png",
+    "08: Stukeley Plate 34": "Transparencies/08_StukeleyPlate34.png",
+    "09: Stukeley Plate 35": "Transparencies/09_StukeleyPlate35.png",
+    "10: Stukeley Plate 36": "Transparencies/10_StukeleyPlate36.png",
+    "11: Stukeley Plate 37": "Transparencies/11_StukeleyPlate37.png",
+    "12: Stukeley Plate 38": "Transparencies/12_StukeleyPlate38.png",
+    "13: Stukeley Plate 39": "Transparencies/13_StukeleyPlate39.png",
+    "14: Stukeley Plate 40": "Transparencies/14_StukeleyPlate40.png",
+    "15: Stukeley Plate 41": "Transparencies/15_StukeleyPlate41.png",
+    "16: Stukeley Plate 42": "Transparencies/16_StukeleyPlate42.png",
+    "17: Smith 1965": "Transparencies/17_Smith1965.png",
+    "18: Aubrey Plan B": "Transparencies/18_AubreyPlanB.png",
+    "19: Stukeley 1722-24b": "Transparencies/19_StukeleyTour.png",
+    "20: Stukeley Plate 15": "Transparencies/20_StukeleyMeasuredPlan.png",
+    "21: Smith 1965 (S Circle)": "Transparencies/21_SmithSCircle_Geophys.png",
+    "22: Stukeley Plan E (S Circle)": "Transparencies/22_StukeleyPlanE.png",
+    "23: Aubrey Plan B (S Circle)": "Transparencies/23_AubreyPlanB.png",
+    "24: Smith 1965 (N Circle)": "Transparencies/24_SmithNCircle_Geophys.png",
+    "25: Aubrey Plan B (N Circle)": "Transparencies/25_AubreyPlanBNCircle.png",
+    "26: Aubrey Plan A (N Circle)": "Transparencies/26_AubreyPlanANCircle.png",
+    "27: Stukeley Plan E (N Circle)": "Transparencies/27_StukeleyPlanE.png",
+};
+
+// Create a container for the image viewer
+const imageViewer = document.createElement('div');
+imageViewer.id = 'image-viewer';
+imageViewer.style.display = 'none';
+document.body.appendChild(imageViewer);
+
+// Create close button for the image viewer
+const closeButton = document.createElement('button');
+closeButton.id = 'close-image-viewer';
+closeButton.innerHTML = '&times;';
+closeButton.onclick = function() {
+    imageViewer.style.display = 'none';
+    document.getElementById('map').style.width = '100%';
+};
+imageViewer.appendChild(closeButton);
+
+// Create image element
+const viewerImage = document.createElement('img');
+viewerImage.id = 'viewer-image';
+imageViewer.appendChild(viewerImage);
+
+
 
 // Function to load GeoJSON and create controls
 function loadGeoJSON(url, name, defaultColor) {
@@ -117,6 +169,19 @@ function loadGeoJSON(url, name, defaultColor) {
             var label = L.DomUtil.create('label', 'layer-label', layerContainer);
             label.textContent = name;
             label.htmlFor = 'layer-' + name.replace(/\s+/g, '-');
+            label.style.cursor = 'pointer';
+        
+        // Click for transparency PNG
+            label.onclick = function(e) {
+                e.stopPropagation();
+                
+                if (layerImages[name]) {
+                    viewerImage.src = layerImages[name];
+                    viewerImage.alt = name;
+                    imageViewer.style.display = 'block';
+                    document.getElementById('map').style.width = '65%';
+                }
+            };
             
         // Color picker
             var colorPicker = L.DomUtil.create('input', 'layer-color', layerContainer);
@@ -154,16 +219,42 @@ function loadGeoJSON(url, name, defaultColor) {
 Promise.all([
     loadGeoJSON('GeoJSONs/c01_AubreyPlanA.geojson', "01: Aubrey Plan A", "#000000"),
     loadGeoJSON('GeoJSONs/c02_StukeleyPlanE.geojson', "02: Stukeley Plan E", "#ff0000"),
-    loadGeoJSON('GeoJSONs/______', "03: Keiller SE Quad", "#0000FF"),
-    loadGeoJSON('GeoJSONs/______', "04: Aubrey S Circle", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "03: Keiller SE Quad", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "04: Aubrey Plan A (S Circle)", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "05: Aubrey Plan A (S Circle Enlarged)", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "06: Stukeley Plate 32", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "07: Stukeley Plate 33", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "08: Stukeley Plate 34", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "09: Stukeley Plate 35", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "10: Stukeley Plate 36", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "11: Stukeley Plate 37", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "12: Stukeley Plate 38", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "13: Stukeley Plate 39", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "14: Stukeley Plate 40", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "15: Stukeley Plate 41", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "16: Stukeley Plate 42", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "17: Smith 1965", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "18: Aubrey Plan B", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "19: Stukeley 1722-24b", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "20: Stukeley Plate 15", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "21: Smith 1965 (S Circle)", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "22: Stukeley Plan E (S Circle)", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "23: Aubrey Plan B (S Circle)", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "24: Smith 1965 (N Circle)", "#0000FF"),
+    loadGeoJSON('GeoJSONs/_______________________', "25: Aubrey Plan B (N Circle)", "#000000"),
+    loadGeoJSON('GeoJSONs/_______________________', "26: Aubrey Plan A (N Circle)", "#ff0000"),
+    loadGeoJSON('GeoJSONs/_______________________', "27: Stukeley Plan E (N Circle)", "#0000FF"),
 ]).then(() => {
     console.log('All GeoJSON layers loaded');
 });
 
 
+
+
+
+
 // Splash screen interaction
 document.addEventListener('DOMContentLoaded', function() {
-    // Your existing code here
     document.getElementById('accept-splash').addEventListener('click', function() {
         document.getElementById('splash-modal').classList.add('hidden');
         document.getElementById('map').classList.remove('inactive');
