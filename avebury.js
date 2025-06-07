@@ -90,8 +90,7 @@ var drawControl = new L.Control.Draw({
 mymap.on(L.Draw.Event.CREATED, function (e) {
     var layer = e.layer;
     drawnItems.addLayer(layer);
-    
-    // Save drawn items to GeoJSON
+// Save drawn items to GeoJSON
     var data = drawnItems.toGeoJSON();
     console.log(JSON.stringify(data));
 });
