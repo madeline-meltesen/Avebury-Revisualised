@@ -219,7 +219,7 @@ function loadGeoJSON(url, name, defaultColor) {
 Promise.all([
     loadGeoJSON('GeoJSONs/c01_AubreyPlanA.geojson', "01: Aubrey Plan A", "#000000"),
     loadGeoJSON('GeoJSONs/c02_StukeleyPlanE.geojson', "02: Stukeley Plan E", "#ff0000"),
-    loadGeoJSON('GeoJSONs/_______________________', "03: Keiller SE Quad", "#0000FF"),
+    loadGeoJSON('GeoJSONs/c03_KeillerSEQuad.geojson', "03: Keiller SE Quad", "#0000FF"),
     loadGeoJSON('GeoJSONs/_______________________', "04: Aubrey Plan A (S Circle)", "#000000"),
     loadGeoJSON('GeoJSONs/_______________________', "05: Aubrey Plan A (S Circle Enlarged)", "#ff0000"),
     loadGeoJSON('GeoJSONs/_______________________', "06: Stukeley Plate 32", "#0000FF"),
