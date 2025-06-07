@@ -67,6 +67,44 @@ var measureControl = L.control.measure({
 }).addTo(mymap);
 
 
+// Create draw tool
+var drawnItems = new L.FeatureGroup();
+mymap.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+    position: 'topright',
+    draw: {
+        polygon: true,
+        polyline: true,
+        rectangle: true,
+        circle: true,  
+        marker: true, 
+        circlemarker: false
+    },
+    edit: {
+        featureGroup: drawnItems  // Enable editing of drawn items
+    }
+}).addTo(mymap);
+
+// Handle drawing events
+mymap.on(L.Draw.Event.CREATED, function (e) {
+    var layer = e.layer;
+    drawnItems.addLayer(layer);
+    
+    // Save drawn items to GeoJSON
+    var data = drawnItems.toGeoJSON();
+    console.log(JSON.stringify(data));
+});
+
+
+// Create export control
+var printControl = L.easyPrint({
+    title: 'Export Map',
+    position: 'topright',
+    exportOnly: true,
+    filename: 'avebury-map',
+    sizeModes: ['Current'],
+}).addTo(mymap);
 
 // GeoJSON layer control
 var geoJSONControl = L.Control.extend({
