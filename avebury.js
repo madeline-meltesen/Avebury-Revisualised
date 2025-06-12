@@ -1,5 +1,5 @@
 // Set up the map
-var mymap = L.map("map").setView([51.4286, -1.8542], 17);
+var mymap = L.map("map").setView([51.4286, -1.8541], 17);
 
 // Add basemaps
 var streets = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
@@ -46,7 +46,7 @@ var ZoomOutControl = L.Control.extend({
         var button = L.DomUtil.create("button", "custom-button");
         button.title = "Reset view";
         button.onclick = function () {
-            map.setView([51.4286, -1.8542], 17);
+            map.setView([51.4286, -1.8541], 17);
         };
         return button;
     }
