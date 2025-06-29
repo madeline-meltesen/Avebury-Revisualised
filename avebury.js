@@ -1,5 +1,5 @@
 // Set up the map
-var mymap = L.map("map").setView([51.4286, -1.8541], 17);
+var mymap = L.map("map").setView([51.4286, -1.8544], 17);
 
 // Add basemaps
 var streets = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
@@ -37,6 +37,18 @@ var layerControl = L.control
     )
     .addTo(mymap);
 
+// Handle window resize events to adjust map size
+window.addEventListener("resize", function () {
+    mymap.invalidateSize();
+
+    // Also handle the image viewer case
+    if (document.getElementById("image-viewer").style.display === "block") {
+        document.getElementById("map").style.width = "65%";
+    } else {
+        document.getElementById("map").style.width = "100%";
+    }
+});
+
 // Create reset view button
 var ZoomOutControl = L.Control.extend({
     options: {
@@ -46,7 +58,7 @@ var ZoomOutControl = L.Control.extend({
         var button = L.DomUtil.create("button", "custom-button");
         button.title = "Reset view";
         button.onclick = function () {
-            map.setView([51.4286, -1.8541], 17);
+            map.setView([51.4286, -1.8544], 17);
         };
         return button;
     }
@@ -110,7 +122,7 @@ function createTextMarker(map) {
         icon: L.divIcon({
             className: "text-annotation",
             html: '<div class="editable-text">Click to edit</div>',
-            iconSize: null,
+            iconSize: null
         })
     }).addTo(drawnItems);
 
@@ -179,8 +191,7 @@ mymap.on(L.Draw.Event.CREATED, function (e) {
     console.log(JSON.stringify(data));
 });
 
-
-// Create export control
+// Create PNG export control
 var printControl = L.easyPrint({
     title: "Export Map",
     position: "topright",
@@ -201,6 +212,18 @@ var geoJSONControl = L.Control.extend({
     }
 });
 var geoJSONControlInstance = new geoJSONControl().addTo(mymap);
+
+var geoJSONContainer = geoJSONControlInstance.getContainer();
+
+// Prevent wheel events from propagating to the map when over the control
+L.DomEvent.on(geoJSONContainer, "wheel", function (e) {
+    // Only stop propagation if we're actually scrolling the control
+    if (e.target.closest(".geojson-control")) {
+        L.DomEvent.stopPropagation(e);
+    }
+});
+
+L.DomEvent.disableScrollPropagation(geoJSONContainer);
 
 // GeoJSON layer storage
 var overlayLayers = {};
@@ -257,8 +280,8 @@ const viewerImage = document.createElement("img");
 viewerImage.id = "viewer-image";
 imageViewer.appendChild(viewerImage);
 
-// Function to load GeoJSON and create controls
-function loadGeoJSON(url, name, defaultColor) {
+// Modified function to load GeoJSON and connect to pre-created controls
+function loadGeoJSON(url, name, defaultColor, container, addToMap = false) {
     return fetch(url)
         .then((response) => response.json())
         .then((data) => {
@@ -268,104 +291,146 @@ function loadGeoJSON(url, name, defaultColor) {
                     weight: 0,
                     fillColor: defaultColor,
                     fillOpacity: 0.6
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(name);
                 }
-            }).addTo(mymap);
+            });
 
-            // Create control elements
-            var layerContainer = L.DomUtil.create("div", "layer-item", geoJSONControlInstance.getContainer());
+            // Only add to map if specified
+            if (addToMap) {
+                mymap.addLayer(overlayLayers[name]);
+            }
 
-            // Visibility checkbox
-            var checkbox = L.DomUtil.create("input", "layer-checkbox", layerContainer);
-            checkbox.type = "checkbox";
-            checkbox.checked = true;
+            // Find the existing container for this layer
+            var layerContainer = container.querySelector(`[data-layer-name="${name}"]`);
+
+            // Set up the checkbox
+            var checkbox = layerContainer.querySelector(".layer-checkbox");
             checkbox.onchange = function () {
                 mymap.hasLayer(overlayLayers[name])
                     ? mymap.removeLayer(overlayLayers[name])
                     : mymap.addLayer(overlayLayers[name]);
             };
 
-            // Layer name
-            var label = L.DomUtil.create("label", "layer-label", layerContainer);
-            label.textContent = name;
-            label.htmlFor = "layer-" + name.replace(/\s+/g, "-");
-            label.style.cursor = "pointer";
-
-            // Click for transparency PNG
-            label.onclick = function (e) {
-                e.stopPropagation();
-
-                if (layerImages[name]) {
-                    viewerImage.src = layerImages[name];
-                    viewerImage.alt = name;
-                    imageViewer.style.display = "block";
-                    document.getElementById("map").style.width = "65%";
-                }
-            };
-
-            // Color picker
-            var colorPicker = L.DomUtil.create("input", "layer-color", layerContainer);
-            colorPicker.type = "color";
-            colorPicker.value = defaultColor;
-            colorPicker.title = "Change color";
+            // Set up color picker
+            var colorPicker = layerContainer.querySelector(".layer-color");
             colorPicker.oninput = function () {
                 overlayLayers[name].setStyle({ fillColor: this.value });
             };
 
-            // Opacity slider
-            var opacityContainer = L.DomUtil.create("div", "opacity-container", layerContainer);
-            var opacityLabel = L.DomUtil.create("span", "opacity-label", opacityContainer);
-            opacityLabel.textContent = "Opacity:";
-            var opacitySlider = L.DomUtil.create("input", "opacity-slider", opacityContainer);
-            opacitySlider.type = "range";
-            opacitySlider.min = 0;
-            opacitySlider.max = 1;
-            opacitySlider.step = 0.1;
-            opacitySlider.value = 0.6;
-            L.DomEvent.on(opacitySlider, "mousedown touchstart click", L.DomEvent.stopPropagation);
+            // Set up opacity slider
+            var opacitySlider = layerContainer.querySelector(".opacity-slider");
             opacitySlider.oninput = function () {
                 overlayLayers[name].setStyle({ fillOpacity: parseFloat(this.value) });
             };
-
-            // Divider
-            L.DomUtil.create("hr", "layer-divider", geoJSONControlInstance.getContainer());
 
             return overlayLayers[name];
         })
         .catch((error) => console.error("Error loading GeoJSON:", error));
 }
 
+// Function to initialize all layers with controls
+function initializeLayers() {
+    const container = geoJSONControlInstance.getContainer();
+
+    // First create all control elements in order
+    layersToLoad.forEach((layer, index) => {
+        // Layer container
+        var layerContainer = L.DomUtil.create("div", "layer-item", container);
+        layerContainer.dataset.layerName = layer.name;
+
+        // Visibility checkbox - only check first 3 layers
+        var checkbox = L.DomUtil.create("input", "layer-checkbox", layerContainer);
+        checkbox.type = "checkbox";
+        checkbox.checked = index < 3; // This will check only first 3 layers
+
+        // Layer name
+        var label = L.DomUtil.create("label", "layer-label", layerContainer);
+        label.textContent = layer.name;
+        label.htmlFor = "layer-" + layer.name.replace(/\s+/g, "-");
+        label.style.cursor = "pointer";
+
+        // Click handler for image viewer
+        label.onclick = function (e) {
+            e.stopPropagation();
+            if (layerImages[layer.name]) {
+                viewerImage.src = layerImages[layer.name];
+                viewerImage.alt = layer.name;
+                imageViewer.style.display = "block";
+                document.getElementById("map").style.width = "65%";
+            }
+        };
+
+        // Color picker
+        var colorPicker = L.DomUtil.create("input", "layer-color", layerContainer);
+        colorPicker.type = "color";
+        colorPicker.value = layer.color;
+        colorPicker.title = "Change color";
+
+        // Opacity slider
+        var opacityContainer = L.DomUtil.create("div", "opacity-container", layerContainer);
+        var opacityLabel = L.DomUtil.create("span", "opacity-label", opacityContainer);
+        opacityLabel.textContent = "Opacity:";
+        var opacitySlider = L.DomUtil.create("input", "opacity-slider", opacityContainer);
+        opacitySlider.type = "range";
+        opacitySlider.min = 0;
+        opacitySlider.max = 1;
+        opacitySlider.step = 0.1;
+        opacitySlider.value = 0.6;
+        L.DomEvent.on(opacitySlider, "mousedown touchstart click", L.DomEvent.stopPropagation);
+
+        // Divider
+        L.DomUtil.create("hr", "layer-divider", container);
+    });
+
+    // Then load all layers using Promise.all
+    Promise.all(
+        layersToLoad.map(
+            (layer, index) => loadGeoJSON(layer.url, layer.name, layer.color, container, index < 3) // Pass whether to add to map
+        )
+    ).then((loadedLayers) => {
+        console.log("All GeoJSON layers loaded");
+    });
+}
+
 // Load all GeoJSON layers
-Promise.all([
-    loadGeoJSON("GeoJSONs/c01_AubreyPlanA.geojson", "01: Aubrey Plan A", "#000000"),
-    loadGeoJSON("GeoJSONs/c02_StukeleyPlanE.geojson", "02: Stukeley Plan E", "#ff0000"),
-    loadGeoJSON("GeoJSONs/c03_KeillerSEQuad.geojson", "03: Keiller SE Quad", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "04: Aubrey Plan A (S Circle)", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "05: Aubrey Plan A (S Circle Enlarged)", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "06: Stukeley Plate 32", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "07: Stukeley Plate 33", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "08: Stukeley Plate 34", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "09: Stukeley Plate 35", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "10: Stukeley Plate 36", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "11: Stukeley Plate 37", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "12: Stukeley Plate 38", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "13: Stukeley Plate 39", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "14: Stukeley Plate 40", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "15: Stukeley Plate 41", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "16: Stukeley Plate 42", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "17: Smith 1965", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "18: Aubrey Plan B", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "19: Stukeley 1722-24b", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "20: Stukeley Plate 15", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "21: Smith 1965 (S Circle)", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "22: Stukeley Plan E (S Circle)", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "23: Aubrey Plan B (S Circle)", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "24: Smith 1965 (N Circle)", "#0000FF"),
-    loadGeoJSON("GeoJSONs/_______________________", "25: Aubrey Plan B (N Circle)", "#000000"),
-    loadGeoJSON("GeoJSONs/_______________________", "26: Aubrey Plan A (N Circle)", "#ff0000"),
-    loadGeoJSON("GeoJSONs/_______________________", "27: Stukeley Plan E (N Circle)", "#0000FF")
-]).then(() => {
-    console.log("All GeoJSON layers loaded");
-});
+const layersToLoad = [
+    { url: "GeoJSONs/c01_AubreyPlanA.geojson", name: "01: Aubrey Plan A", color: "#000000" },
+    { url: "GeoJSONs/c02_StukeleyPlanE.geojson", name: "02: Stukeley Plan E", color: "#ff0000" },
+    { url: "GeoJSONs/c03_KeillerSEQuad.geojson", name: "03: Keiller SE Quad", color: "#0000FF" },
+    { url: "GeoJSONs/c04_AubreySCircle.geojson", name: "04: Aubrey Plan A (S Circle)", color: "#000000" },
+    {
+        url: "GeoJSONs/c05_AubreySCircleEnlarged.geojson",
+        name: "05: Aubrey Plan A (S Circle Enlarged)",
+        color: "#ff0000"
+    },
+    { url: "GeoJSONs/c06_StukeleyPlate32.geojson", name: "06: Stukeley Plate 32", color: "#0000FF" },
+    { url: "GeoJSONs/c07_StukeleyPlate33.geojson", name: "07: Stukeley Plate 33", color: "#000000" },
+    { url: "GeoJSONs/c08_StukeleyPlate34.geojson", name: "08: Stukeley Plate 34", color: "#ff0000" },
+    { url: "GeoJSONs/c09_StukeleyPlate35.geojson", name: "09: Stukeley Plate 35", color: "#0000FF" },
+    { url: "GeoJSONs/c10_StukeleyPlate36.geojson", name: "10: Stukeley Plate 36", color: "#000000" },
+    { url: "GeoJSONs/c11_StukeleyPlate37.geojson", name: "11: Stukeley Plate 37", color: "#ff0000" },
+    { url: "GeoJSONs/c12_StukeleyPlate38.geojson", name: "12: Stukeley Plate 38", color: "#0000FF" },
+    { url: "GeoJSONs/c13_StukeleyPlate39.geojson", name: "13: Stukeley Plate 39", color: "#000000" },
+    { url: "GeoJSONs/c14_StukeleyPlate40.geojson", name: "14: Stukeley Plate 40", color: "#ff0000" },
+    { url: "GeoJSONs/c15_StukeleyPlate41.geojson", name: "15: Stukeley Plate 41", color: "#0000FF" },
+    { url: "GeoJSONs/c16_StukeleyPlate42.geojson", name: "16: Stukeley Plate 42", color: "#000000" },
+    { url: "GeoJSONs/c17_Smith1965.geojson", name: "17: Smith 1965", color: "#ff0000" },
+    { url: "GeoJSONs/c18_AubreyPlanB.geojson", name: "18: Aubrey Plan B", color: "#0000FF" },
+    { url: "GeoJSONs/c19_StukeleyTour.geojson", name: "19: Stukeley 1722-24b", color: "#000000" },
+    { url: "GeoJSONs/c20_StukeleyMeasuredPlan.geojson", name: "20: Stukeley Plate 15", color: "#ff0000" },
+    { url: "GeoJSONs/c21_SmithSCircle_Geophys.geojson", name: "21: Smith 1965 (S Circle)", color: "#0000FF" },
+    { url: "GeoJSONs/c22_StukeleyPlanE.geojson", name: "22: Stukeley Plan E (S Circle)", color: "#000000" },
+    { url: "GeoJSONs/c23_AubreyPlanB.geojson", name: "23: Aubrey Plan B (S Circle)", color: "#ff0000" },
+    { url: "GeoJSONs/c24_SmithNCircle_Geophys.geojson", name: "24: Smith 1965 (N Circle)", color: "#0000FF" },
+    { url: "GeoJSONs/c25_AubreyPlanBNCircle.geojson", name: "25: Aubrey Plan B (N Circle)", color: "#000000" },
+    { url: "GeoJSONs/c26_AubreyPlanANCircle.geojson", name: "26: Aubrey Plan A (N Circle)", color: "#ff0000" },
+    { url: "GeoJSONs/c27_StukeleyPlanE.geojson", name: "27: Stukeley Plan E (N Circle)", color: "#0000FF" }
+];
+
+// Initialize all layers with controls
+initializeLayers();
 
 // Splash screen interaction
 document.addEventListener("DOMContentLoaded", function () {

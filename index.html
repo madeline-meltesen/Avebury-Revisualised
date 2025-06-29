@@ -1,70 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>   
-    <title>Avebury Revisualised</title> 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" 
-          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" 
-          crossorigin="" />
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    <!-- Leaflet Minimap CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.css" />
-    <!-- Leaflet EasyButton CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Leaflet Minimap JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.js"></script>
-    <!-- Leaflet-EasyButton CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-    <!-- Leaflet-EasyButton JS -->
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-    <!-- Leaflet LinearMeasurement CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
-    <!-- Leaflet LinearMeasurement JS -->
-    <script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Leaflet easyPrint CSS -->
-    <script src="https://unpkg.com/leaflet-easyprint@2.1.9/dist/bundle.min.js"></script>
-    <!-- Leaflet easyPrint JS -->
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easyprint@2.1.9/dist/bundle.min.js"></script>
-    <!-- Leaflet.draw CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-    <!-- Leaflet.draw JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-    <!-- Link style sheet -->
-    <link rel="stylesheet" href = "avebury.css">   
-</head>
-    
-<body>
+    <head>
+        <title>Avebury Revisualised</title>
 
-    <div id="splash-modal" class="active">
-    <div class="splash-content">
-        <h1>Welcome to Avebury Revisualised</h1>
-        <div class="splash-text">
-        <p>This interactive map explores evolving interpretations of Avebury Henge (Wiltshire, England) through historic plans by antiquarians and archaeologists from the 17th–20th centuries.
-           Plans are digitised from Ucko et al.'s (1991) book <em> Avebury Reconsidered: From the 1660s to the 1990s </em>. Use this map to:</p>
-        <ul>
-            <li>Compare plans by John Aubrey (1626–97), William Stukeley (1687–1765), Alexander Keiller (1889–1955), and Isobel Smith (1912–2005); </li>
-            <li>Customise views with adjustable colours and opacity for each layer; and</li>
-            <li>Take measurements, annotate features, and export maps as PNGs</li>
-        </ul>
+        <!-- Fonts -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@300;400;700&display=swap"
+            rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700&display=swap" rel="stylesheet" />
+
+        <!-- Leaflet CSS -->
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin="" />
+        <!-- Leaflet JavaScript -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+        <!-- Leaflet Minimap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.css" />
+        <!-- Leaflet Minimap JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.js"></script>
+
+        <!-- Leaflet Measure CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
+        <!-- Leaflet Measure JS -->
+        <script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+        <!-- Leaflet easyPrint CSS -->
+        <script src="https://unpkg.com/leaflet-easyprint@2.1.9/dist/bundle.min.js"></script>
+        <!-- Leaflet easyPrint JS -->
+        <script src="https://cdn.jsdelivr.net/npm/leaflet-easyprint@2.1.9/dist/bundle.min.js"></script>
+
+        <!-- Leaflet.draw CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+        <!-- Leaflet.draw JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+        <!-- Link style sheet -->
+        <link rel="stylesheet" href="avebury.css" />
+    </head>
+
+    <body>
+        <div id="splash-modal" class="active">
+            <div class="splash-content">
+                <h1>Welcome to Avebury Revisualised</h1>
+                <div class="splash-text">
+                    <p>
+                        This interactive map explores evolving interpretations of Avebury Henge (Wiltshire, England)
+                        through historic plans by antiquarians and archaeologists from the 17th–20th centuries. Plans
+                        are digitised from Ucko et al.'s (1991) book
+                        <em> Avebury Reconsidered: From the 1660s to the 1990s </em>. Use this map to:
+                    </p>
+                    <ul>
+                        <li>
+                            Compare plans by John Aubrey (1626–97), William Stukeley (1687–1765), Alexander Keiller
+                            (1889–1955), and Isobel Smith (1912–2005);
+                        </li>
+                        <li>Customise views with adjustable colours and opacity for each layer; and</li>
+                        <li>Take measurements, annotate features, and export maps as PNGs</li>
+                    </ul>
+                </div>
+                <button id="accept-splash">Explore the Map</button>
+            </div>
         </div>
-        <button id="accept-splash">Explore the Map</button>
-    </div>
-    </div>
-    
-    
-    <div id="map"></div>
-    <div class="map-title">
-        <h1>Avebury Revisualised: <br> Digitised Cartographies <br> of a Contested Past</h1>
-    </div>
-    <script src="avebury.js"></script>
-    
-</body>
-    
+
+        <div id="map"></div>
+        <div class="map-title">
+            <h1>
+                Avebury Revisualised: <br />
+                Digitised Cartographies <br />
+                of a Contested Past
+            </h1>
+        </div>
+        <script src="avebury.js"></script>
+    </body>
 </html>

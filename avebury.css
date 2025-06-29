@@ -1,10 +1,10 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
-
 
 /* Splash screen */
 #splash-modal {
@@ -13,7 +13,7 @@ html, body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,24 +31,30 @@ html, body {
     padding: 2rem;
     border-radius: 8px;
     max-width: 550px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 .splash-content h1 {
     color: #3b82f6;
     margin-bottom: 1rem;
-    font-family: 'Lexend Exa', sans-serif;
+    font-family: "Lexend Exa", sans-serif;
 }
 .splash-text {
     text-align: left;
     margin-top: 1.5rem;
     margin-bottom: 2rem;
     line-height: 1.6;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     font-size: 14px;
 }
 #accept-splash {
@@ -60,19 +66,20 @@ html, body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
 }
 #accept-splash:hover {
     background-color: #2563eb;
 }
 
-
 #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: lightgray;
-    height: 100vh;
-    width: 100vw;
     border: solid white 5px;
-    box-sizing: border-box;
     transition: width 0.3s ease;
 }
 
@@ -85,12 +92,12 @@ html, body {
     top: 13.5px;
     left: 55px;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.9);
     background-clip: padding-box;
     padding: 5px 10px;
     border-radius: 5px;
     border: solid rgba(0, 0, 0, 0.2) 2px;
-    font-family: 'Lexend Exa', sans-serif;
+    font-family: "Lexend Exa", sans-serif;
 }
 
 .map-title h1 {
@@ -103,19 +110,19 @@ html, body {
 /* Reset view button */
 .custom-button {
     background-color: rgba(255, 255, 255);
-    background-image: url('Images/globe_icon.png');
-    background-size: 72%; 
-    background-repeat: no-repeat; 
+    background-image: url("Images/globe_icon.png");
+    background-size: 72%;
+    background-repeat: no-repeat;
     background-position: center;
     background-clip: padding-box;
     opacity: 85%;
     border: solid rgba(0, 0, 0, 0.2) 2px;
     border-radius: 4px;
-    width: 32px; 
-    height: 32px; 
-    top: 72px; 
+    width: 32px;
+    height: 32px;
+    top: 72px;
     left: 0;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 /* Leaflet zoom controls */
@@ -123,28 +130,27 @@ html, body {
     position: fixed;
     left: 4px;
     top: 4px;
-    width: 30px; 
+    width: 30px;
     opacity: 85%;
 }
 
 /* Measurement tool styling */
 .leaflet-control-measure {
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     opacity: 85%;
 }
 
 /* Draw tool styling */
 .leaflet-draw-toolbar a {
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     opacity: 85%;
 }
 
 /* Export tool styling */
 .leaflet-control-easyPrint a {
-        font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     opacity: 85%;
 }
-
 
 /* Custom text tool styling */
 .leaflet-control-text button {
@@ -158,7 +164,7 @@ html, body {
     background: rgba(255, 255, 255, 0.5);
     border: none;
     border-radius: 4px;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
 }
 .text-annotation div {
     display: inline-block;
@@ -177,11 +183,10 @@ html, body {
     outline: 2px solid #3388ff;
 }
 
-
 /* Basemap control */
-.leaflet-control-layers, 
+.leaflet-control-layers,
 .leaflet-control-layers-overlays {
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     color: #333;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 5px;
@@ -190,14 +195,15 @@ html, body {
 /* GeoJSON Control Panel */
 .geojson-control {
     top: 73px;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.9);
     background-clip: padding-box;
     border-radius: 5px;
     padding: 5px 8px;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     border: solid rgba(0, 0, 0, 0.2) 2px;
     max-height: 70vh;
     overflow-y: auto;
+    pointer-events: auto;
 }
 .geojson-control h3 {
     margin-top: 0;
@@ -220,7 +226,7 @@ html, body {
 }
 .layer-color {
     height: 20px;
-    width: 25px;
+    width: 20px;
     padding: 0;
     border: 1px solid #ccc;
     cursor: pointer;
@@ -233,6 +239,8 @@ html, body {
 }
 .opacity-slider {
     flex-grow: 1;
+    max-width: 100px;
+    min-width: 80px;
 }
 .layer-divider {
     margin: 5px 0;
@@ -243,13 +251,12 @@ html, body {
     z-index: 1000 !important;
 }
 
-
 /* Image viewer styles */
 #image-viewer {
     position: fixed;
     top: 0;
     right: 0;
-    width: 35%; 
+    width: 35%;
     height: 100vh;
     background: white;
     z-index: 1000;
@@ -287,3 +294,19 @@ html, body {
     color: #003366;
 }
 
+/* Leaflet popup styling */
+.leaflet-popup-content {
+    font-family: "Lexend", sans-serif !important;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 12px 15px;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 5px !important;
+    font-family: "Lexend", sans-serif !important;
+}
+
+.leaflet-popup-tip-container {
+    font-family: "Lexend", sans-serif !important;
+}
