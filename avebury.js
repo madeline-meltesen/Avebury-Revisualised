@@ -71,7 +71,7 @@ var miniMap = new L.Control.MiniMap(
     {
         toggleDisplay: true,
         position: "bottomright",
-        zoomLevelOffset: -6
+        zoomLevelOffset: -5
     }
 ).addTo(mymap);
 
@@ -91,8 +91,8 @@ var measureControl = L.control
         primaryLengthUnit: "meters",
         secondaryLengthUnit: "kilometers",
         primaryAreaUnit: "sqmeters",
-        activeColor: "#3b82f6", // color for active measurement
-        completedColor: "#10b981" // color for completed measurement
+        activeColor: "#3b82f6",
+        completedColor: "#10b981"
     })
     .addTo(mymap);
 
@@ -215,9 +215,8 @@ var geoJSONControlInstance = new geoJSONControl().addTo(mymap);
 
 var geoJSONContainer = geoJSONControlInstance.getContainer();
 
-// Prevent wheel events from propagating to the map when over the control
+// Prevent mouse wheel events from propagating to the map when over the control
 L.DomEvent.on(geoJSONContainer, "wheel", function (e) {
-    // Only stop propagation if we're actually scrolling the control
     if (e.target.closest(".geojson-control")) {
         L.DomEvent.stopPropagation(e);
     }
@@ -297,12 +296,10 @@ function loadGeoJSON(url, name, defaultColor, container, addToMap = false) {
                 }
             });
 
-            // Only add to map if specified
             if (addToMap) {
                 mymap.addLayer(overlayLayers[name]);
             }
 
-            // Find the existing container for this layer
             var layerContainer = container.querySelector(`[data-layer-name="${name}"]`);
 
             // Set up the checkbox
@@ -330,7 +327,7 @@ function loadGeoJSON(url, name, defaultColor, container, addToMap = false) {
         .catch((error) => console.error("Error loading GeoJSON:", error));
 }
 
-// Function to initialize all layers with controls
+// Function to Initialise all layers with controls
 function initializeLayers() {
     const container = geoJSONControlInstance.getContainer();
 
@@ -387,7 +384,7 @@ function initializeLayers() {
     // Then load all layers using Promise.all
     Promise.all(
         layersToLoad.map(
-            (layer, index) => loadGeoJSON(layer.url, layer.name, layer.color, container, index < 3) // Pass whether to add to map
+            (layer, index) => loadGeoJSON(layer.url, layer.name, layer.color, container, index < 3) // Initialise only first 3 transparencies
         )
     ).then((loadedLayers) => {
         console.log("All GeoJSON layers loaded");
@@ -400,11 +397,7 @@ const layersToLoad = [
     { url: "GeoJSONs/c02_StukeleyPlanE.geojson", name: "02: Stukeley Plan E", color: "#ff0000" },
     { url: "GeoJSONs/c03_KeillerSEQuad.geojson", name: "03: Keiller SE Quad", color: "#0000FF" },
     { url: "GeoJSONs/c04_AubreySCircle.geojson", name: "04: Aubrey Plan A (S Circle)", color: "#000000" },
-    {
-        url: "GeoJSONs/c05_AubreySCircleEnlarged.geojson",
-        name: "05: Aubrey Plan A (S Circle Enlarged)",
-        color: "#ff0000"
-    },
+    { url: "GeoJSONs/c05_AubreySCircleEnlarged.geojson", name: "05: Aubrey Plan A (S Circle Enlarged)", color: "#ff0000" },
     { url: "GeoJSONs/c06_StukeleyPlate32.geojson", name: "06: Stukeley Plate 32", color: "#0000FF" },
     { url: "GeoJSONs/c07_StukeleyPlate33.geojson", name: "07: Stukeley Plate 33", color: "#000000" },
     { url: "GeoJSONs/c08_StukeleyPlate34.geojson", name: "08: Stukeley Plate 34", color: "#ff0000" },
@@ -429,7 +422,7 @@ const layersToLoad = [
     { url: "GeoJSONs/c27_StukeleyPlanE.geojson", name: "27: Stukeley Plan E (N Circle)", color: "#0000FF" }
 ];
 
-// Initialize all layers with controls
+// Initialise all layers with controls
 initializeLayers();
 
 // Splash screen interaction
