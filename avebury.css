@@ -113,7 +113,6 @@ body {
 .geojson-control .layer-label {
     text-decoration: underline;
     cursor: pointer;
-    color: Highlight;
 }
 .geojson-control a:hover,
 .geojson-control .layer-label:hover {
