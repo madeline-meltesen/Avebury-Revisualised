@@ -1,5 +1,5 @@
 // Set up the map
-var mymap = L.map("map").setView([51.4286, -1.8544], 17);
+var mymap = L.map("map").setView([51.4286, -1.8547], 17);
 
 // Add basemaps
 var streets = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
@@ -58,7 +58,7 @@ var ZoomOutControl = L.Control.extend({
         var button = L.DomUtil.create("button", "custom-button");
         button.title = "Reset view";
         button.onclick = function () {
-            map.setView([51.4286, -1.8544], 17);
+            map.setView([51.4286, -1.8547], 17);
         };
         return button;
     }
@@ -207,7 +207,15 @@ var geoJSONControl = L.Control.extend({
     },
     onAdd: function (map) {
         var container = L.DomUtil.create("div", "geojson-control");
-        container.innerHTML = "<h3>Digitised Plans (click names to open image sidebar)</h3>";
+        container.innerHTML = `
+            <button id="geojson-toggle" style="width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 5px;">Hide Panel ▲</button>
+            <div id="geojson-wrapper">
+            <div id="geojson-content">
+            <h3>Digitised Plans (click names to open image sidebar)</h3>
+            <p>Click <a href = 'https://drive.google.com/drive/folders/1-RZ7R2TgfTpLpfYh_DozppxlPd_BZudT?usp=sharing' target='_blank'> here</a> for all plan SVGs and PNGs</p>
+            </div>
+            <div id="geojson-layers"></div>
+            </div>`;
         return container;
     }
 });
@@ -328,13 +336,28 @@ function loadGeoJSON(url, name, defaultColor, container, addToMap = false) {
 }
 
 // Function to Initialise all layers with controls
+
 function initializeLayers() {
     const container = geoJSONControlInstance.getContainer();
+    const layersContainer = container.querySelector("#geojson-layers");
+
+    // Toggle button
+    document.getElementById("geojson-toggle").addEventListener("click", function () {
+        const wrapper = document.getElementById("geojson-wrapper");
+        const btn = this;
+        if (wrapper.style.display === "none") {
+            wrapper.style.display = "block";
+            btn.textContent = "Hide Panel ▲";
+        } else {
+            wrapper.style.display = "none";
+            btn.textContent = "Show Panel ▼";
+        }
+    });
 
     // First create all control elements in order
     layersToLoad.forEach((layer, index) => {
         // Layer container
-        var layerContainer = L.DomUtil.create("div", "layer-item", container);
+        var layerContainer = L.DomUtil.create("div", "layer-item", layersContainer);
         layerContainer.dataset.layerName = layer.name;
 
         // Visibility checkbox - only check first 3 layers
@@ -378,7 +401,7 @@ function initializeLayers() {
         L.DomEvent.on(opacitySlider, "mousedown touchstart click", L.DomEvent.stopPropagation);
 
         // Divider
-        L.DomUtil.create("hr", "layer-divider", container);
+        L.DomUtil.create("hr", "layer-divider", layersContainer);
     });
 
     // Then load all layers using Promise.all
@@ -397,7 +420,7 @@ const layersToLoad = [
     { url: "GeoJSONs/c02_StukeleyPlanE.geojson", name: "02: Stukeley Plan E", color: "#ff0000" },
     { url: "GeoJSONs/c03_KeillerSEQuad.geojson", name: "03: Keiller SE Quad", color: "#0000FF" },
     { url: "GeoJSONs/c04_AubreySCircle.geojson", name: "04: Aubrey Plan A (S Circle)", color: "#000000" },
-    { url: "GeoJSONs/c05_AubreySCircleEnlarged.geojson", name: "05: Aubrey Plan A (S Circle Enlarged)", color: "#ff0000" },
+    {url: "GeoJSONs/c05_AubreySCircleEnlarged.geojson", name: "05: Aubrey Plan A (S Circle Enlarged)", color: "#ff0000" },
     { url: "GeoJSONs/c06_StukeleyPlate32.geojson", name: "06: Stukeley Plate 32", color: "#0000FF" },
     { url: "GeoJSONs/c07_StukeleyPlate33.geojson", name: "07: Stukeley Plate 33", color: "#000000" },
     { url: "GeoJSONs/c08_StukeleyPlate34.geojson", name: "08: Stukeley Plate 34", color: "#ff0000" },
