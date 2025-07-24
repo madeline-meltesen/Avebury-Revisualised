@@ -301,7 +301,9 @@ function loadGeoJSON(url, name, defaultColor, container, addToMap = false) {
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(name);
-                }
+                },
+                smoothFactor: 0,
+                tolerance: 0,
             });
 
             if (addToMap) {
